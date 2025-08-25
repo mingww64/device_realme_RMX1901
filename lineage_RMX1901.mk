@@ -1,29 +1,23 @@
 #
-# Copyright (C) 2021-2024 The AOSP Project
+# Copyright (C) 2021-2025 The AOSP Project
 #
 # SPDX-License-Identifier: Apache-2.0
 #
 
-# Inherit some common Infinity X stuff
+# Inherit some common DerpFest stuff
 TARGET_BOOT_ANIMATION_RES := 1080
-WITH_GAPPS := true
-TARGET_SHIPS_GOOGLE_DIALER := true
-INFINITY_MAINTAINER := м∂_ιѕяαƒιℓ
-$(call inherit-product, vendor/infinity/config/common_full_phone.mk)
+DERPFEST_BUILD_TYPE := Community
+DERPFEST_BUILD_VARIANT := Stable
+TARGET_DISABLE_EPPE := true
+$(call inherit-product, vendor/lineage/config/common_full_phone.mk)
 
 # Inherit from RMX1901 device
 $(call inherit-product, $(LOCAL_PATH)/device.mk)
 
-# Viper
-$(call inherit-product, packages/apps/ViPER4AndroidFX/config.mk)
-
-# Sign builds
-PRODUCT_DEFAULT_DEV_CERTIFICATE := vendor/lineage-priv/keys/releasekey
-
 PRODUCT_BRAND := realme
 PRODUCT_DEVICE := RMX1901
 PRODUCT_MANUFACTURER := realme
-PRODUCT_NAME := infinity_RMX1901
+PRODUCT_NAME := lineage_RMX1901
 PRODUCT_MODEL := RMX1901
 
 PRODUCT_GMS_CLIENTID_BASE := android-oppo
