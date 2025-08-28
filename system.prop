@@ -77,9 +77,7 @@ ro.iorapd.enable=false
 iorapd.readahead.enable=false
 
 # LMKD
-ro.lmk.kill_heaviest_task=true
-ro.lmk.kill_timeout_ms=15
-ro.lmk.swap_free_low_percentage=20
+ro.lmk.use_new_strategy=true
 ro.lmk.swap_util_max=90
 
 # Media
