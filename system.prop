@@ -178,3 +178,6 @@ media.stagefright.enable-http=true
 media.stagefright.enable-player=true
 media.stagefright.enable-qcp=true
 media.stagefright.enable-scan=true
+
+# Incremental FS
+ro.incremental.enable=true
