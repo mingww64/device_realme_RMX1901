@@ -10,6 +10,8 @@ TARGET_USES_MINI_GAPPS := true
 TARGET_HAS_UDFPS := true
 TARGET_DISABLE_EPPE := true
 
+# $(call inherit-product, packages/apps/ViPER4AndroidFX/config.mk)
+
 $(call inherit-product, vendor/lineage/config/common_full_phone.mk)
 
 # Inherit from RMX1901 device
@@ -30,3 +32,5 @@ PRODUCT_BUILD_PROP_OVERRIDES += \
     DeviceProduct=RMX1901 \
     SystemDevice=RMX1901 \
     SystemName=RMX1901
+
+

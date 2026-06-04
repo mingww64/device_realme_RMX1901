@@ -21,6 +21,7 @@ cc_prebuilt_binary {
         "DreamlinerDreamsPrebuilt_100894",
         "DreamlinerPrebuilt_22000020",
     ],
+    check_elf_files: false,
     strip: {
         none: true,
     },
