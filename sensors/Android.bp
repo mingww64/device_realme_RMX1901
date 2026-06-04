@@ -15,7 +15,7 @@
 
 cc_binary {
     name: "android.hardware.sensors@2.0-service.multihal.x",
-    stem: "android.hardware.sensors@2.0-service.multihal",
+    stem: "android.hardware.sensors@2.0-service.multihal.rmx",
     defaults: [
         "hidl_defaults",
     ],
@@ -26,7 +26,7 @@ cc_binary {
         "HalProxyCallback.cpp",
         "service.cpp",
     ],
-    init_rc: ["android.hardware.sensors@2.0-service-multihal.rc"],
+    init_rc: ["android.hardware.sensors@2.0-service.multihal.rmx.rc"],
     vintf_fragments: ["android.hardware.sensors@2.0-multihal.xml"],
     header_libs: [
         "android.hardware.sensors@2.X-multihal.header",

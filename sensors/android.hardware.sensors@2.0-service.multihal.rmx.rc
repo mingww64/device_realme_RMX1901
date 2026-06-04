@@ -1,0 +1,8 @@
+service vendor.sensors-hal-2-0-multihal /vendor/bin/hw/android.hardware.sensors@2.0-service.multihal.rmx
+    class hal
+    interface android.hardware.sensors@2.0::ISensors default
+    user system
+    group system wakelock context_hub input
+    task_profiles ServiceCapacityLow
+    capabilities BLOCK_SUSPEND
+    rlimit rtprio 10 10
