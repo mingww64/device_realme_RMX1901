@@ -23,6 +23,8 @@
 #include <inttypes.h>
 #include <unistd.h>
 #include <fstream>
+#include <cerrno>
+#include <cstring>
 
 #define FINGERPRINT_ACQUIRED_VENDOR 6
 
@@ -32,6 +34,11 @@
 #define NOTIFY_BLANK_PATH "/sys/kernel/oppo_display/notify_panel_blank"
 #define POWER_STATUS "/sys/kernel/oppo_display/power_status"
 #define DC_DIM_PATH "/sys/kernel/oppo_display/dimlayer_bl_en"
+#define FP_ENABLE_PATH "/proc/touchpanel/fp_enable"
+
+#include <thread>
+#include <chrono>
+#include <mutex>
 
 namespace android {
 namespace hardware {
@@ -39,6 +46,10 @@ namespace biometrics {
 namespace fingerprint {
 namespace V2_3 {
 namespace implementation {
+
+std::mutex mTouchMutex;
+uint32_t mTouchId = 0;
+bool mTouchDown = false;
 
 bool volatile dcDimState;
 bool volatile mFodCircleVisible;
@@ -57,7 +68,14 @@ BiometricsFingerprint::BiometricsFingerprint() {
 template <typename T>
 static void set(const std::string& path, const T& value) {
     std::ofstream file(path);
+    if (!file.is_open()) {
+        ALOGE("Failed to open %s: %s", path.c_str(), strerror(errno));
+        return;
+    }
     file << value;
+    if (file.fail()) {
+        ALOGE("Failed to write to %s: %s", path.c_str(), strerror(errno));
+    }
 }
 
 template <typename T>
@@ -91,7 +109,9 @@ public:
             }
 
             set(DIMLAYER_PATH, 0);
-            set(FP_PRESS_PATH, 0);
+            ALOGI("onFingerUp called");
+    set(FP_PRESS_PATH, 0);
+            set(FP_ENABLE_PATH, 0);
             mFodCircleVisible = false;
         }
 
@@ -181,13 +201,35 @@ Return<bool> BiometricsFingerprint::isUdfps(uint32_t) {
 }
 
 Return<void> BiometricsFingerprint::onFingerDown(uint32_t, uint32_t, float, float) {
+    ALOGI("onFingerDown called");
+    {
+        std::lock_guard<std::mutex> lock(mTouchMutex);
+        mTouchDown = true;
+        mTouchId++;
+    }
     set(DIMLAYER_PATH, 1);
     set(FP_PRESS_PATH, 1);
     return Void();
 }
 
 Return<void> BiometricsFingerprint::onFingerUp() {
-    set(FP_PRESS_PATH, 0);
+    ALOGI("onFingerUp called");
+    uint32_t currentId;
+    {
+        std::lock_guard<std::mutex> lock(mTouchMutex);
+        mTouchDown = false;
+        currentId = mTouchId;
+    }
+    std::thread([currentId]() {
+        std::this_thread::sleep_for(std::chrono::milliseconds(300));
+        std::lock_guard<std::mutex> lock(mTouchMutex);
+        if (!mTouchDown && mTouchId == currentId) {
+            ALOGI("onFingerUp confirmed after debounce");
+            set(FP_PRESS_PATH, 0);
+        } else {
+            ALOGI("onFingerUp ignored due to debounce");
+        }
+    }).detach();
     return Void();
 }
 
@@ -234,7 +276,10 @@ Return<RequestStatus> BiometricsFingerprint::enroll(const hidl_array<uint8_t, 69
         set(AOD_MODE_PATH, 0);
 	}
     mFodCircleVisible = true;
+    ALOGI("onFingerDown called");
     set(DIMLAYER_PATH, 1);
+    set(FP_PRESS_PATH, 0);
+    set(FP_ENABLE_PATH, 1);
     return OppoToAOSPRequestStatus(mOppoBiometricsFingerprint->enroll(hat, gid, timeoutSec));
 }
 
@@ -244,7 +289,9 @@ Return<RequestStatus> BiometricsFingerprint::postEnroll()  {
     }
 
     set(DIMLAYER_PATH, 0);
-	set(FP_PRESS_PATH, 0);
+	ALOGI("onFingerUp called");
+    set(FP_PRESS_PATH, 0);
+    set(FP_ENABLE_PATH, 0);
     mFodCircleVisible = false;
     return OppoToAOSPRequestStatus(mOppoBiometricsFingerprint->postEnroll());
 }
@@ -260,7 +307,9 @@ Return<RequestStatus> BiometricsFingerprint::cancel()  {
     }
 
     set(DIMLAYER_PATH, 0);
-	set(FP_PRESS_PATH, 0);
+	ALOGI("onFingerUp called");
+    set(FP_PRESS_PATH, 0);
+    set(FP_ENABLE_PATH, 0);
     mFodCircleVisible = false;
 
     if (mOppoBiometricsFingerprint->cancel() == vendor::oppo::hardware::biometrics::fingerprint::V2_1::RequestStatus::SYS_OK) {
@@ -296,8 +345,11 @@ Return<RequestStatus> BiometricsFingerprint::authenticate(uint64_t operationId, 
     }
     mFodCircleVisible = true;
 
+    ALOGI("onFingerDown called");
     set(DIMLAYER_PATH, 1);
-	set(FP_PRESS_PATH, 0);
+	ALOGI("onFingerUp called");
+    set(FP_PRESS_PATH, 0);
+    set(FP_ENABLE_PATH, 1);
     ALOGE("auth");
     return OppoToAOSPRequestStatus(mOppoBiometricsFingerprint->authenticate(operationId, gid));
 }

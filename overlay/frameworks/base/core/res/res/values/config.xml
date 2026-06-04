@@ -1199,7 +1199,7 @@
     </integer-array>
 
     <!-- How long it takes for the HW to start illuminating after the illumination is requested. -->
-    <integer name="config_udfps_illumination_transition_ms">0</integer>
+    <integer name="config_udfps_illumination_transition_ms">50</integer>
 
     <!-- Flag indicating whether the surface flinger is inefficient
          at performing a blur.  Used by parts of the UI to turn off
