@@ -131,7 +131,6 @@ ro.apk_verity.mode=0
 
 # Graphics
 
-debug.sf.recomputecrop=0
 debug.mdpcomp.logs=0
 debug.sf.latch_unsignaled=0
 debug.sf.auto_latch_unsignaled=0
