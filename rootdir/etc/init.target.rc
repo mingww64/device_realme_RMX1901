@@ -42,6 +42,10 @@ on post-fs
 
     write /dev/ipa 1
 
+# Workaround for cache
+    rm /data/resource-cache
+    rm /data/system/package_cache
+
 on late-fs
     mount_all /vendor/etc/fstab.qcom --late
 
