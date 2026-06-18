@@ -18,6 +18,9 @@ $(call inherit-product, vendor/realme/RMX1901/RMX1901-vendor.mk)
 # Add common definitions for Qualcomm
 $(call inherit-product, hardware/qcom-caf/common/common.mk)
 
+# Dolby
+$(call inherit-product, hardware/dolby/dolby.mk)
+
 OVERRIDE_PRODUCT_COMPRESSED_APEX := false
 PRODUCT_OTA_ENFORCE_VINTF_KERNEL_REQUIREMENTS := true
 
@@ -368,7 +371,9 @@ PRODUCT_SOONG_NAMESPACES += \
     hardware/google/interfaces \
     hardware/google/pixel \
     hardware/lineage/interfaces/power-libperfmgr \
-    hardware/qcom-caf/common/libqti-perfd-client
+    hardware/qcom-caf/common/libqti-perfd-client \
+    hardware/nxp \
+    hardware/dolby
 
 # SystemUI
 EXCLUDE_SYSTEMUI_TESTS := true
