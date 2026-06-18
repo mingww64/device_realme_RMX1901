@@ -68,6 +68,7 @@ ro.com.google.ime.kb_pad_land_r=14
 debug.sf.enable_hwc_vds=1
 debug.hwui.skia_atrace_enabled=false
 debug.hwui.use_gpu_pixel_buffers=1
+persist.sys.force_highendgfx=true
 persist.demo.hdmirotationlock=false
 persist.sys.sf.color_saturation=1.0
 persist.sys.sf.native_mode=0
