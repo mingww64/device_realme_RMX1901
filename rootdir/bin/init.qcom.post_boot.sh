@@ -127,3 +127,7 @@ esac
 misc_link=$(ls -l /dev/block/bootdevice/by-name/misc)
 real_path=${misc_link##*>}
 setprop persist.vendor.mmi.misc_dev_path $real_path
+
+# Tune VM
+echo 5 > /proc/sys/vm/dirty_background_ratio
+echo 200 > /proc/sys/vm/vfs_cache_pressure
