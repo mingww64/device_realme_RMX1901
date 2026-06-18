@@ -101,6 +101,7 @@
       "Path": "/sys/class/kgsl/kgsl-3d0/devfreq/min_freq",
       "Values": [
         "610000000",
+        "504000000",
         "430000000",
         "355000000",
         "267000000"
@@ -288,7 +289,13 @@
       "PowerHint": "SUSTAINED_PERFORMANCE",
       "Node": "GPUMaxFreq",
       "Duration": 0,
-      "Value": "430000000"
+      "Value": "610000000"
+    },
+    {
+      "PowerHint": "INTERACTION",
+      "Node": "GPUMinFreq",
+      "Duration": 1500,
+      "Value": "504000000"
     },
     {
       "PowerHint": "INTERACTION",
