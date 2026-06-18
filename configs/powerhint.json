@@ -294,8 +294,8 @@
     {
       "PowerHint": "INTERACTION",
       "Node": "GPUMinFreq",
-      "Duration": 1500,
-      "Value": "504000000"
+      "Duration": 800,
+      "Value": "430000000"
     },
     {
       "PowerHint": "INTERACTION",
