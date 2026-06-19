@@ -1,0 +1,11 @@
+cc_library_shared {
+    name: "libdolby_shim",
+    vendor: true,
+    relative_install_path: "soundfx",
+    srcs: ["dolby_shim.cpp"],
+    shared_libs: [
+        "libdl",
+        "liblog",
+        "libhardware",
+    ],
+}

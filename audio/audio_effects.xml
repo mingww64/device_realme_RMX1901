@@ -49,6 +49,7 @@
         <library name="swspatializer" path="libswspatializer.so"/>
         <library name="dlbvol" path="libdlbvol.so"/>
         <library name="dax" path="libdlbvol.so"/>
+        <library name="dolby_shim" path="libdolby_shim.so"/>
     </libraries>
     <effects>
         <effectProxy name="bassboost" library="proxy" uuid="14804144-a5ee-4d24-aa88-0002a5d5c51b">
@@ -105,7 +106,7 @@
         <effect name="swspatializer" library="swspatializer" uuid="ea02bbe3-1c6f-4a12-be09-764a26b0b28f"/>
         <effect name="dlbvol" library="dlbvol" uuid="40469723-e81c-4372-a518-eb99820d0766"/>
         <effect name="dax" library="dax" uuid="ec7178ec-e5e1-4432-a3f4-4657e6795210"/>
-        <effect name="dax_impl" library="dax" uuid="9d4921da-8225-4f29-aefa-39537a04bcaa"/>
+        <effect name="dax_impl" library="dolby_shim" uuid="9d4921da-8225-4f29-aefa-39537a04bcaa"/>
     </effects>
     <postprocess>
         <stream type="music">

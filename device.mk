@@ -21,6 +21,10 @@ $(call inherit-product, hardware/qcom-caf/common/common.mk)
 # Dolby
 $(call inherit-product, hardware/dolby/dolby.mk)
 
+# Dolby DAP UUID shim
+PRODUCT_PACKAGES += \
+    libdolby_shim
+
 OVERRIDE_PRODUCT_COMPRESSED_APEX := false
 PRODUCT_OTA_ENFORCE_VINTF_KERNEL_REQUIREMENTS := true
 
