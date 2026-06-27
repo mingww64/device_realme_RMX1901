@@ -14,3 +14,6 @@ allow hal_audio_default sysfs:dir { read open };
 allow hal_audio_default proc_audio_file:file { read };
 
 dontaudit hal_audio_default default_prop:file { read open getattr };
+
+# Dolby denial fix
+allow hal_audio_default property_socket:sock_file write;

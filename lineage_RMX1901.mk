@@ -8,9 +8,10 @@
 TARGET_BOOT_ANIMATION_RES := 1080
 TARGET_USES_MINI_GAPPS := true
 TARGET_HAS_UDFPS := true
-TARGET_DISABLE_EPPE := true
 
-# $(call inherit-product, packages/apps/ViPER4AndroidFX/config.mk)
+BYPASS_CHARGE_SUPPORTED := true
+TARGET_INCLUDE_VIPERFX := true
+$(call inherit-product, packages/apps/ViPER4AndroidFX/config.mk)
 
 $(call inherit-product, vendor/lineage/config/common_full_phone.mk)
 

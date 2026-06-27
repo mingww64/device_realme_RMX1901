@@ -41,7 +41,6 @@ PRODUCT_PACKAGES += \
     libqcomvisualizer \
     libqcomvoiceprocessing \
     libvolumelistener \
-    libaudioparsers \
     libcirrusspkrprot \
     libspkrprot \
     libhdmiedid \
@@ -50,7 +49,6 @@ PRODUCT_PACKAGES += \
     libhfp \
     libbatterylistener \
     libsndmonitor \
-    libhdmipassthru \
     tinymix
 
 PRODUCT_COPY_FILES += \
@@ -84,6 +82,7 @@ PRODUCT_COPY_FILES += \
     frameworks/av/services/audiopolicy/config/hearing_aid_audio_policy_configuration_7_0.xml:$(TARGET_COPY_OUT_VENDOR)/etc/hearing_aid_audio_policy_configuration_7_0.xml \
     frameworks/av/services/audiopolicy/config/audio_policy_volumes.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_policy_volumes.xml \
     frameworks/av/services/audiopolicy/config/r_submix_audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/r_submix_audio_policy_configuration.xml
+
 
 # Bootanimation
 TARGET_SCREEN_HEIGHT := 2340
@@ -126,9 +125,12 @@ PRODUCT_PACKAGES += \
     vendor.qti.hardware.memtrack-service \
     vendor.qti.hardware.display.allocator@1.0-service
 
-PRODUCT_DEX_PREOPT_DEFAULT_COMPILER_FILTER := verify
+PRODUCT_SYSTEM_SERVER_COMPILER_FILTER := speed-profile
+PRODUCT_ALWAYS_PREOPT_EXTRACTED_APK := true
 PRODUCT_USE_PROFILE_FOR_BOOT_IMAGE := true
 PRODUCT_DEX_PREOPT_BOOT_IMAGE_PROFILE_LOCATION := frameworks/base/boot/boot-image-profile.txt
+SYSTEM_OPTIMIZE_JAVA := true
+SYSTEMUI_OPTIMIZE_JAVA := true
 
 # DRM
 PRODUCT_PACKAGES += \
@@ -186,10 +188,8 @@ PRODUCT_PACKAGES += \
 
 $(call soong_config_set,libinit,vendor_init_lib,//$(LOCAL_PATH):libinit_RMX1901)
 
-# Lineage Health
-PRODUCT_PACKAGES += \
-    android.hardware.health-service.qti \
-    vendor.lineage.health-service.default
+# Health
+$(call inherit-product, vendor/qcom/opensource/healthd-ext/health-vendor-product.mk)
 
 $(call soong_config_set,lineage_health,charging_control_charging_path,/sys/class/power_supply/battery/mmi_charging_enable)
 
@@ -347,7 +347,7 @@ PRODUCT_PACKAGES += \
     RemovePackages
 
 # Scudo
-PRODUCT_USE_SCUDO := true
+PRODUCT_DISABLE_SCUDO := true
 
 # Seccomp policy
 PRODUCT_COPY_FILES += \
