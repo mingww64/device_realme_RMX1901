@@ -4,5 +4,15 @@
     "target_path": "packages/apps/ViPER4AndroidFX",
     "remote": "github-non-los",
     "branch": "bka"
+  },
+  {
+    "repository": "swiitch-OFF-Lab/hardware_dolby",
+    "target_path": "hardware/dolby",
+    "branch": "Dolby-Vision-2.0"
+  },
+  {
+    "repository": "crdroidandroid/android_packages_apps_LunarisDolby",
+    "target_path": "packages/apps/LunarisDolby",
+    "branch": "16.0"
   }
 ]
