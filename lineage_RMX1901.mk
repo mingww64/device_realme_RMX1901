@@ -34,4 +34,6 @@ PRODUCT_BUILD_PROP_OVERRIDES += \
     SystemDevice=RMX1901 \
     SystemName=RMX1901
 
-
+# Disable fs-verity requirement to fix ResilientAtomicFile exceptions
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.apk_verity.mode=0

@@ -73,6 +73,9 @@
     <!-- If this is true, the screen will come on when you unplug usb/power/whatever. -->
     <bool name="config_unplugTurnsOnScreen">true</bool>
 
+    <!-- Boolean indicating whether the wifi chipset has link layer stats reporting support -->
+    <bool translatable="false" name="config_wifi_link_layer_stats_supported">false</bool>
+
     <!-- Whether or not to skip the initial brightness ramps when the display transitions to
          STATE_ON. Setting this to true will skip the brightness ramp to the last stored active
          brightness value and will repeat for the following ramp if autobrightness is enabled. -->

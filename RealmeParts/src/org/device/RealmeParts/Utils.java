@@ -47,9 +47,9 @@ public class Utils {
             fos.flush();
             fos.close();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            Log.e(TAG, "File not found: " + filename);
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, "IOException writing to " + filename);
         }
     }
 
