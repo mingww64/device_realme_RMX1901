@@ -19,11 +19,12 @@ $(call inherit-product, vendor/realme/RMX1901/RMX1901-vendor.mk)
 $(call inherit-product, hardware/qcom-caf/common/common.mk)
 
 # Dolby
+TARGET_INCLUDES_DolbyVision := true
 $(call inherit-product, hardware/dolby/dolby.mk)
 
-# Dolby DAP UUID shim
 PRODUCT_PACKAGES += \
-    libdolby_shim
+    LunarisDolby
+
 
 OVERRIDE_PRODUCT_COMPRESSED_APEX := false
 PRODUCT_OTA_ENFORCE_VINTF_KERNEL_REQUIREMENTS := true

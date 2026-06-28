@@ -8,4 +8,7 @@ cc_library_shared {
         "liblog",
         "libhardware",
     ],
+    sanitize: {
+        cfi: true,
+    },
 }

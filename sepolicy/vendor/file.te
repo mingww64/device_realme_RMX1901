@@ -49,3 +49,6 @@ type proc_vibration_file, sysfs_type, fs_type;
 
 # I/O Scheduler
 type sysfs_io_sched_tuneable, fs_type, sysfs_type;
+
+# Alias for Dolby Vision
+typealias sysfs_graphics alias vendor_sysfs_graphics;

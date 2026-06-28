@@ -13,16 +13,16 @@ static const effect_uuid_t kUuidPatchedType = {
     {0x46, 0x57, 0xe6, 0x79, 0x52, 0x10}
 };
 
-static int effect_process(effect_handle_t self,
+static int32_t effect_process(effect_handle_t self,
         audio_buffer_t *inBuffer, audio_buffer_t *outBuffer) {
     (void)self; (void)inBuffer; (void)outBuffer;
     return 0;
 }
 
-static int effect_command(effect_handle_t self,
+static int32_t effect_command(effect_handle_t self,
         uint32_t cmdCode, uint32_t cmdSize,
         void *pCmdData, uint32_t *replySize, void *pReplyData) {
-    (void)self; (void)cmdSize; (void)pCmdData;
+    (void)self; (void)cmdSize; (void)pCmdData; (void)pReplyData;
     switch (cmdCode) {
     case EFFECT_CMD_INIT:
     case EFFECT_CMD_SET_CONFIG:
@@ -30,11 +30,31 @@ static int effect_command(effect_handle_t self,
     case EFFECT_CMD_ENABLE:
     case EFFECT_CMD_DISABLE:
     case EFFECT_CMD_SET_PARAM:
-        if (replySize) *replySize = sizeof(int);
+        if (replySize != nullptr) {
+            *replySize = sizeof(int32_t);
+        }
+        if (pReplyData != nullptr) {
+            *(int32_t *)pReplyData = 0;
+        }
         return 0;
-    case EFFECT_CMD_GET_PARAM:
-        if (replySize) *replySize = sizeof(int);
-        return -ENOSYS;
+    case EFFECT_CMD_GET_PARAM: {
+        if (pCmdData == nullptr || pReplyData == nullptr || replySize == nullptr) {
+            return -EINVAL;
+        }
+        uint32_t copySize = (cmdSize < *replySize) ? cmdSize : *replySize;
+        memcpy(pReplyData, pCmdData, copySize);
+        if (*replySize >= 12) {
+            int32_t *reply = (int32_t *)pReplyData;
+            reply[0] = 0; // status
+            uint32_t psize = reply[1];
+            uint32_t vsize = reply[2];
+            uint32_t voffset = 12 + ((psize + 3) & ~3);
+            if (voffset + vsize <= *replySize) {
+                memset((char *)pReplyData + voffset, 0, vsize);
+            }
+        }
+        return 0;
+    }
     case EFFECT_CMD_SET_DEVICE:
     case EFFECT_CMD_SET_VOLUME:
         return 0;
@@ -43,19 +63,27 @@ static int effect_command(effect_handle_t self,
     }
 }
 
-struct shim_effect_if {
-    int (*process)(effect_handle_t, audio_buffer_t *, audio_buffer_t *);
-    int (*command)(effect_handle_t, uint32_t, uint32_t, void *, uint32_t *, void *);
-};
+static int32_t shim_get_descriptor(const effect_uuid_t *uuid,
+        effect_descriptor_t *pDesc);
 
-static struct shim_effect_if gEffectIf = { effect_process, effect_command };
-static struct shim_effect_if *gEffectIfPtr = &gEffectIf;
+static int32_t effect_get_descriptor(effect_handle_t self, effect_descriptor_t *pDescriptor) {
+    (void)self;
+    return shim_get_descriptor(&kUuidDap, pDescriptor);
+}
+
+static struct effect_interface_s gEffectIf = {
+    .process = effect_process,
+    .command = effect_command,
+    .get_descriptor = effect_get_descriptor,
+    .process_reverse = nullptr
+};
+static struct effect_interface_s *gEffectIfPtr = &gEffectIf;
 
 static bool uuid_equal(const effect_uuid_t *a, const effect_uuid_t *b) {
     return memcmp(a, b, sizeof(effect_uuid_t)) == 0;
 }
 
-static int shim_create_effect(const effect_uuid_t *uuid,
+static int32_t shim_create_effect(const effect_uuid_t *uuid,
         int32_t sessionId, int32_t ioId, effect_handle_t *pHandle) {
     (void)sessionId; (void)ioId;
     if (!uuid_equal(uuid, &kUuidDap)) return -ENOENT;
@@ -64,13 +92,16 @@ static int shim_create_effect(const effect_uuid_t *uuid,
     return 0;
 }
 
-static int shim_release_effect(effect_handle_t handle) {
+static int32_t shim_release_effect(effect_handle_t handle) {
     (void)handle;
     return 0;
 }
 
-static int shim_get_descriptor(const effect_uuid_t *uuid,
+static int32_t shim_get_descriptor(const effect_uuid_t *uuid,
         effect_descriptor_t *pDesc) {
+    if (uuid == nullptr || pDesc == nullptr) {
+        return -EINVAL;
+    }
     if (!uuid_equal(uuid, &kUuidDap)) return -ENOENT;
 
     memset(pDesc, 0, sizeof(effect_descriptor_t));
@@ -87,31 +118,26 @@ static int shim_get_descriptor(const effect_uuid_t *uuid,
     return 0;
 }
 
-struct aeli_s {
-    uint32_t magic;
-    uint32_t version;
-    const char *lib_name;
-    const char *vendor;
-    uint8_t reserved[32];
-};
-
-static const char kAeliLibName[] = "Effect DAP Library";
-static const char kAeliVendor[] = "Dolby Laboratories";
-
 extern "C" {
     __attribute__((visibility("default")))
     audio_effect_library_t AUDIO_EFFECT_LIBRARY_INFO = {
-        shim_create_effect,
-        shim_release_effect,
-        shim_get_descriptor,
+        .tag = AUDIO_EFFECT_LIBRARY_TAG,
+        .version = EFFECT_LIBRARY_API_VERSION,
+        .name = "Effect DAP Library",
+        .implementor = "Dolby Laboratories",
+        .create_effect = shim_create_effect,
+        .release_effect = shim_release_effect,
+        .get_descriptor = shim_get_descriptor,
     };
 
     __attribute__((visibility("default")))
-    struct aeli_s AELI = {
-        0x41454c54,
-        0x00030000,
-        kAeliLibName,
-        kAeliVendor,
-        {0},
+    audio_effect_library_t AELI = {
+        .tag = AUDIO_EFFECT_LIBRARY_TAG,
+        .version = EFFECT_LIBRARY_API_VERSION,
+        .name = "Effect DAP Library",
+        .implementor = "Dolby Laboratories",
+        .create_effect = shim_create_effect,
+        .release_effect = shim_release_effect,
+        .get_descriptor = shim_get_descriptor,
     };
 }

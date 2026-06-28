@@ -3,6 +3,11 @@ get_prop(hal_audio_default, vendor_mpctl_prop);
 get_prop(hal_audio_default, oppo_debug_prop);
 get_prop(hal_audio_default, vendor_audio_prop);
 
+# Dolby denial fix
+set_prop(hal_audio_default, vendor_audio_prop)
+allow hal_audio_default vendor_audio_prop:file { read open getattr };
+allow hal_audio_default property_socket:sock_file write;
+
 allow hal_audio_default sysfs:dir read;
 hal_client_domain(hal_audio_default, hal_power);
 allow hal_audio diag_device:chr_file rw_file_perms;
