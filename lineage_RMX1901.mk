@@ -34,6 +34,5 @@ PRODUCT_BUILD_PROP_OVERRIDES += \
     SystemDevice=RMX1901 \
     SystemName=RMX1901
 
-# Disable fs-verity requirement to fix ResilientAtomicFile exceptions
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.boot.vendor.overlay.theme=com.android.internal.systemui.navbar.gestural;com.google.android.systemui.gxoverlay_gms
