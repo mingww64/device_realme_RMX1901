@@ -1,1 +1,5 @@
 get_prop(gmscore_app, system_adbd_prop)
+
+dontaudit gmscore_app proc_filesystems:file read;
+dontaudit gmscore_app apk_data_file:file ioctl;
+dontaudit gmscore_app adbd_prop:file read;
