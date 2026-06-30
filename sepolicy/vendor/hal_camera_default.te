@@ -19,3 +19,4 @@ allow hal_camera_default radio_prop:file { getattr };
 dontaudit hal_camera_default radio_prop:file read;
 allow hal_camera_default hal_graphics_allocator_service:service_manager find;
 allow hal_camera_default debugfs:file { read open getattr };
+dontaudit hal_camera_default property_type:file { getattr open read map };
