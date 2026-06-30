@@ -44,7 +44,7 @@ def AddImage(info, basename, dest):
   info.script.AppendExtra('package_extract_file("%s", "%s");' % (basename, dest))
 
 def OTA_Assertions(info):
-  info.script.AppendExtra('assert(getprop("ro.device.latest_fw") == "true" || abort("Older firmware detected. Kindly update firmware to realme UI 2 and retry flashing."););');
+  info.script.AppendExtra('assert(getprop("ro.device.latest_fw") == "true" || getprop("ro.boot.prjname") != "" || abort("Older firmware detected. Kindly update firmware to realme UI 2 and retry flashing."););')
   return
 
 def OTA_InstallEnd(info):
