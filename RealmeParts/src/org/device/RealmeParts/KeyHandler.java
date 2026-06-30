@@ -249,17 +249,39 @@ public class KeyHandler implements DeviceKeyHandler {
                 Context.MODE_PRIVATE | Context.MODE_MULTI_PROCESS);
     }
 
+    private boolean isSupportedGesture(int scanCode) {
+        return scanCode == GESTURE_DOUBLE_TAP_SCANCODE ||
+                scanCode == GESTURE_W_SCANCODE ||
+                scanCode == GESTURE_M_SCANCODE ||
+                scanCode == GESTURE_CIRCLE_SCANCODE ||
+                scanCode == GESTURE_TWO_SWIPE_SCANCODE ||
+                scanCode == GESTURE_UP_ARROW_SCANCODE ||
+                scanCode == GESTURE_DOWN_ARROW_SCANCODE ||
+                scanCode == GESTURE_LEFT_ARROW_SCANCODE ||
+                scanCode == GESTURE_RIGHT_ARROW_SCANCODE ||
+                scanCode == GESTURE_SWIPE_UP_SCANCODE ||
+                scanCode == GESTURE_SWIPE_DOWN_SCANCODE ||
+                scanCode == GESTURE_SWIPE_LEFT_SCANCODE ||
+                scanCode == GESTURE_SWIPE_RIGHT_SCANCODE;
+    }
+
     public KeyEvent handleKeyEvent(KeyEvent event) {
-        if (event.getAction() != KeyEvent.ACTION_UP) {
+        int scanCode = event.getScanCode();
+
+        if (!isSupportedGesture(scanCode)) {
             return event;
         }
-        int scanCode = event.getScanCode();
+
+        if (event.getAction() != KeyEvent.ACTION_UP) {
+            return null;
+        }
+
         if (!mEventHandler.hasMessages(GESTURE_REQUEST)) {
             Message msg = getMessageForKeyEvent(event);
             mEventHandler.sendMessage(msg);
         }
 
-        return event;
+        return null;
     }
 
     private Message getMessageForKeyEvent(KeyEvent keyEvent) {
