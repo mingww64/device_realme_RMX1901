@@ -52,6 +52,11 @@ on late-fs
 on post-fs-data
     mkdir /data/vendor/nnhal 0700 system system
 
+    # Create dummy RF cable status file for libril-qc-hal-qmi.so
+    write /data/vendor/radio/rfc 0
+    chown radio radio /data/vendor/radio/rfc
+    chmod 0660 /data/vendor/radio/rfc
+
 on boot
     start rmt_storage
     start rfs_access
