@@ -236,6 +236,9 @@ DEVICE_PACKAGE_OVERLAYS += \
     $(LOCAL_PATH)/overlay-lineage \
     $(LOCAL_PATH)/overlay
 
+PRODUCT_PACKAGE_OVERLAYS += \
+    $(LOCAL_PATH)/overlay-product
+
 PRODUCT_ENFORCE_RRO_TARGETS := *
 
 PRODUCT_ENFORCE_RRO_EXCLUDED_OVERLAYS += \
@@ -410,6 +413,7 @@ PRODUCT_PACKAGES += \
 
 # Updater
 AB_OTA_UPDATER := false
+PRODUCT_PACKAGES += UpdaterOverlayCustom
 
 # USB
 PRODUCT_PACKAGES += \

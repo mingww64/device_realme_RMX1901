@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="updater_server_url" translatable="false">https://evox-ota-worker.felicia.workers.dev/api/v1/{device}/{type}</string>
+    <string name="menu_changelog_url" translatable="false">https://github.com/mingww64/device_realme_RMX1901_/commits/experimental-evo-blobs</string>
+</resources>
