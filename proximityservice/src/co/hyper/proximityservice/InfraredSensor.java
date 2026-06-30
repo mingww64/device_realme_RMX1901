@@ -35,7 +35,7 @@ public class InfraredSensor implements SensorEventListener {
     private static final int SENSORID = 33171005; //stk_st2x2x Wakeup
 
     private static final String PS_STATUS = "/proc/touchpanel/fd_enable";
-    private static final String PS_MASK = "/proc/touchpanel/prox_mask";
+    private static final String PS_MASK = "/proc/touchpanel/ps_status";
 
     // Store last status
     private static boolean sensorAlive = false;
@@ -74,6 +74,8 @@ public class InfraredSensor implements SensorEventListener {
             return;
         }
         /* Let's do stuff ? */
+        if (!flag) return;
+
         sendFar();
     }
 
@@ -113,7 +115,6 @@ public class InfraredSensor implements SensorEventListener {
        FileHelper.writeValue(PS_MASK, "1");
    }
 
-   /* Set proximity status as near */
    void sendNear() {
        if (DEBUG) Log.d(TAG, "Sent near event to proximity mask node");
        flag = true; // Enable spam control flag
