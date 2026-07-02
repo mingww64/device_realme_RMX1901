@@ -70,6 +70,24 @@
     </PreferenceCategory>
 
     <PreferenceCategory
+            android:title="UDFPS Auto-Brightness Fix">
+
+        <SwitchPreferenceCompat
+            android:key="udfps_light_sensor_fix"
+            android:summary="@string/udfps_light_sensor_fix_summary"
+            android:title="@string/udfps_light_sensor_fix_title"
+            android:defaultValue="false" />
+
+        <Preference
+            android:key="udfps_calibrate_bleed"
+            android:title="Calibrate Screen Bleed"
+            android:summary="Automatically determine Max Screen Bleed Lux in a dark room">
+            <intent android:targetPackage="org.device.RealmeParts"
+                    android:targetClass="org.device.RealmeParts.UdfpsCalibrationActivity" />
+        </Preference>
+    </PreferenceCategory>
+
+    <PreferenceCategory
             android:title="@string/touch">
 
 

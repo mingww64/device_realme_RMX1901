@@ -37,6 +37,14 @@
         android:theme="@style/Theme.SubSettingsBase.Expressive">
 
         <!-- Realme Parts -->
+        <activity android:name=".UdfpsCalibrationActivity"
+            android:label="Calibrate Screen Bleed"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".RealmePartsActivity"
             android:label="@string/device_title"

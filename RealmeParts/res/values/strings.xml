@@ -181,4 +181,9 @@
     <string name="vibration_strength_system_title">System vibration</string>
     <string name="vibration_strength_notification_title">Notification vibration</string>
     <string name="vibration_strength_call_title">Call vibration</string>
+
+    <!-- UDFPS Auto-brightness Fix -->
+    <string name="udfps_light_sensor_fix_title">UDFPS Auto-Brightness Fix</string>
+    <string name="udfps_light_sensor_fix_summary">Prevents screen brightness bleed from increasing auto-brightness in dark environments.</string>
+
 </resources>

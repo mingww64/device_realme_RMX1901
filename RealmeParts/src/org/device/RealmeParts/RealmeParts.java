@@ -25,6 +25,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.os.SystemProperties;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
@@ -73,6 +78,7 @@ public class RealmeParts extends SettingsBasePreferenceFragment
     private Preference mGesturesPref;
     private Preference mKcalPref;
     private Preference mAudioPref;
+
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -131,6 +137,27 @@ public class RealmeParts extends SettingsBasePreferenceFragment
                          return true;
                      }
                 });
+
+        Preference udfpsFix = findPreference("udfps_light_sensor_fix");
+        if (udfpsFix != null) {
+            udfpsFix.setOnPreferenceChangeListener(this);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Preference calibratePref = findPreference("udfps_calibrate_bleed");
+        if (calibratePref != null) {
+            String threshold = SystemProperties.get("persist.sys.udfps.lux_threshold", "Not calibrated");
+            String alphaUp = SystemProperties.get("persist.sys.udfps.alpha_up", "0.2");
+            String alphaDown = SystemProperties.get("persist.sys.udfps.alpha_down", "0.2");
+            if (!"Not calibrated".equals(threshold)) {
+                calibratePref.setSummary("Max Bleed: " + threshold + " lux | Up: " + alphaUp + " | Down: " + alphaDown);
+            } else {
+                calibratePref.setSummary("Automatically determine Max Screen Bleed Lux in a dark room");
+            }
+        }
     }
 
     @Override
@@ -141,7 +168,10 @@ public class RealmeParts extends SettingsBasePreferenceFragment
                     SharedPreferences.Editor prefChange = PreferenceManager.getDefaultSharedPreferences(getContext()).edit();
                     prefChange.putBoolean(KEY_HBM_AUTOBRIGHTNESS_SWITCH, enabled).commit();
                     Startup.enableService(getContext());
-                }
+                } else if ("udfps_light_sensor_fix".equals(key)) {
+            boolean enabled = (Boolean) value;
+            SystemProperties.set("persist.sys.udfps.brightness_fix", enabled ? "true" : "false");
+        }
         return true;
     }
 
