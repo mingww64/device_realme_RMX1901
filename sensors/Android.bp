@@ -27,7 +27,7 @@ cc_binary {
         "service.cpp",
     ],
     init_rc: ["android.hardware.sensors@2.0-service.multihal.rmx.rc"],
-
+    vintf_fragments: ["android.hardware.sensors@2.0-multihal.xml"],
     header_libs: [
         "android.hardware.sensors@2.X-multihal.header",
         "android.hardware.sensors@2.X-shared-utils",
