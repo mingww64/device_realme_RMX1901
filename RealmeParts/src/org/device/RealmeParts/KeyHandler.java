@@ -58,6 +58,7 @@ public class KeyHandler implements DeviceKeyHandler {
     private static final String TAG = KeyHandler.class.getSimpleName();
     private static final int GESTURE_REQUEST = 1;
     private static final int GESTURE_WAKELOCK_DURATION = 2000;
+    private static final int PROXIMITY_WAKE_LOCK_TIMEOUT = 500;
     private static final boolean DEBUG = true;
 
     // Supported scancodes
@@ -133,6 +134,9 @@ public class KeyHandler implements DeviceKeyHandler {
                     "org.device.RealmeParts", Context.CONTEXT_IGNORE_SECURITY);
         } catch (NameNotFoundException e) {
         }
+        
+        mProximitySensor = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+        mUseProxiCheck = true;
     }
 
     private class EventHandler extends Handler {
@@ -265,6 +269,34 @@ public class KeyHandler implements DeviceKeyHandler {
                 scanCode == GESTURE_SWIPE_RIGHT_SCANCODE;
     }
 
+    private void processEvent(final KeyEvent keyEvent) {
+        if (mProximityWakeLock != null) {
+            mProximityWakeLock.acquire(PROXIMITY_WAKE_LOCK_TIMEOUT);
+        }
+        mSensorManager.registerListener(new SensorEventListener() {
+            @Override
+            public void onSensorChanged(SensorEvent event) {
+                if (mProximityWakeLock != null && mProximityWakeLock.isHeld()) {
+                    mProximityWakeLock.release();
+                }
+                mSensorManager.unregisterListener(this);
+                if (!mEventHandler.hasMessages(GESTURE_REQUEST)) {
+                    // The message was canceled or handled due to timeout
+                    return;
+                }
+                mEventHandler.removeMessages(GESTURE_REQUEST);
+                // "Far" means not in pocket
+                if (event.values[0] >= mProximitySensor.getMaximumRange() || event.values[0] > 0) {
+                    Message msg = getMessageForKeyEvent(keyEvent);
+                    mEventHandler.sendMessage(msg);
+                }
+            }
+
+            @Override
+            public void onAccuracyChanged(Sensor sensor, int accuracy) {}
+        }, mProximitySensor, SensorManager.SENSOR_DELAY_FASTEST);
+    }
+
     public KeyEvent handleKeyEvent(KeyEvent event) {
         int scanCode = event.getScanCode();
 
@@ -278,7 +310,15 @@ public class KeyHandler implements DeviceKeyHandler {
 
         if (!mEventHandler.hasMessages(GESTURE_REQUEST)) {
             Message msg = getMessageForKeyEvent(event);
-            mEventHandler.sendMessage(msg);
+            boolean proximityCheckEnabled = Settings.System.getInt(mContext.getContentResolver(),
+                    "proximity_on_wake", 1) == 1;
+            
+            if (mUseProxiCheck && proximityCheckEnabled && mProximitySensor != null) {
+                mEventHandler.sendMessageDelayed(msg, PROXIMITY_WAKE_LOCK_TIMEOUT);
+                processEvent(event);
+            } else {
+                mEventHandler.sendMessage(msg);
+            }
         }
 
         return null;
