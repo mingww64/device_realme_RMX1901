@@ -71,12 +71,12 @@ public class Startup extends BroadcastReceiver {
         KernelControl.enableGestures(
                 screenOffGestureSharedPreferences.getBoolean(
                         ScreenOffGesture.PREF_GESTURE_ENABLE, false));
-        KernelControl.enableDt2w(
-                screenOffGestureSharedPreferences.getBoolean(
-                        ScreenOffGesture.PREF_DT2W_ENABLE, true));
 
         Intent kcalIntent  = new Intent(context , KcalService.class);
         context.startService(kcalIntent);
+
+        Intent screenStateIntent = new Intent(context, ScreenStateService.class);
+        context.startService(screenStateIntent);
 
         enabled = sharedPrefs.getBoolean(RealmeParts.KEY_DC_SWITCH, false);
         restore(DCModeSwitch.getFile(), enabled);
@@ -87,7 +87,7 @@ public class Startup extends BroadcastReceiver {
         enableService(context);
 
         int gain = Settings.Secure.getInt(context.getContentResolver(),
-                SoundControlSettings.PREF_HEADPHONE_GAIN, 4);
+                SoundControlSettings.PREF_HEADPHONE_GAIN, 0);
         SoundControlFileUtils.setValue(SoundControlSettings.HEADPHONE_GAIN_PATH, gain + " " + gain);
         SoundControlFileUtils.setValue(SoundControlSettings.MICROPHONE_GAIN_PATH, Settings.Secure.getInt(context.getContentResolver(),
                 SoundControlSettings.PREF_MICROPHONE_GAIN, 0));
@@ -96,7 +96,7 @@ public class Startup extends BroadcastReceiver {
         VibrateFileUtils.setValue(VibratorSettings.NOTIFICATION_LEVEL, Settings.Secure.getInt(context.getContentResolver(),
                 VibratorSettings.PREF_NOTIFICATION_LEVEL, 3596));
         VibrateFileUtils.setValue(VibratorSettings.USER_LEVEL, Settings.Secure.getInt(context.getContentResolver(),
-                VibratorSettings.PREF_USER_LEVEL, 3300));
+                VibratorSettings.PREF_USER_LEVEL, 2000));
     }
 
     private void enableComponent(Context context, String name) {

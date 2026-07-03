@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -33,6 +34,7 @@ import androidx.preference.Preference;
 import androidx.preference.Preference.OnPreferenceChangeListener;
 import androidx.preference.Preference.OnPreferenceClickListener;
 import com.android.settingslib.widget.SettingsBasePreferenceFragment;
+import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceScreen;
 import androidx.preference.SwitchPreferenceCompat;
 
@@ -90,8 +92,9 @@ public class ScreenOffGesture extends SettingsBasePreferenceFragment implements
     private Preference mGestureSwipeLeft;
     private Preference mGestureSwipeRight;
 
-    private SwitchPreferenceCompat mEnableDt2w;
+
     private SwitchPreferenceCompat mEnableGestures;
+    private SwitchPreferenceCompat mEnableDt2w;
     private SwitchPreferenceCompat mHapticFeedback;
 
     private boolean mCheckPreferences;
@@ -131,7 +134,7 @@ public class ScreenOffGesture extends SettingsBasePreferenceFragment implements
         setPreferencesFromResource(R.xml.screen_off_gesture, null);
         prefs = getPreferenceScreen();
 
-        mEnableDt2w = (SwitchPreferenceCompat) prefs.findPreference(PREF_DT2W_ENABLE);
+
 
         mEnableGestures = (SwitchPreferenceCompat) prefs.findPreference(PREF_GESTURE_ENABLE);
 
@@ -140,7 +143,25 @@ public class ScreenOffGesture extends SettingsBasePreferenceFragment implements
                 getContentResolver(), Utils.TOUCHSCREEN_GESTURE_HAPTIC_FEEDBACK, 1) != 0);
         mHapticFeedback.setOnPreferenceChangeListener(this);
 
+        mEnableDt2w = (SwitchPreferenceCompat) prefs.findPreference(PREF_DT2W_ENABLE);
+        int resId = getResources().getIdentifier("config_supportDoubleTapWake", "bool", "android");
+        boolean dt2wSupported = resId != 0 && getResources().getBoolean(resId);
+        
+        if (dt2wSupported) {
+            PreferenceCategory dt2wCategory = (PreferenceCategory) prefs.findPreference("dt2w");
+            if (dt2wCategory != null && mEnableDt2w != null) {
+                dt2wCategory.removePreference(mEnableDt2w);
+            }
+        } else {
+            mEnableDt2w.setChecked(Utils.getIntSystem(getContext(), getActivity().
+                    getContentResolver(), PREF_DT2W_ENABLE, 1) != 0);
+            mEnableDt2w.setOnPreferenceChangeListener(this);
+        }
+
         mGestureDoubleTap = (Preference) prefs.findPreference(PREF_GESTURE_DOUBLE_TAP);
+        if (dt2wSupported) {
+            mGestureDoubleTap.setDependency("enable_gestures"); // Re-map dependency since we removed enable_dt2w
+        }
         mGestureW = (Preference) prefs.findPreference(PREF_GESTURE_W);
         mGestureM = (Preference) prefs.findPreference(PREF_GESTURE_M);
         mGestureCircle = (Preference) prefs.findPreference(PREF_GESTURE_CIRCLE);
@@ -181,10 +202,7 @@ public class ScreenOffGesture extends SettingsBasePreferenceFragment implements
         setupOrUpdatePreference(mGestureSwipeRight, mScreenOffGestureSharedPreferences
                 .getString(PREF_GESTURE_SWIPE_RIGHT, ActionConstants.ACTION_MEDIA_NEXT));
 
-        boolean enableDt2w =
-                mScreenOffGestureSharedPreferences.getBoolean(PREF_DT2W_ENABLE, true);
-        mEnableDt2w.setChecked(enableDt2w);
-        mEnableDt2w.setOnPreferenceChangeListener(this);
+
 
         boolean enableGestures =
                 mScreenOffGestureSharedPreferences.getBoolean(PREF_GESTURE_ENABLE, false);
@@ -228,6 +246,26 @@ public class ScreenOffGesture extends SettingsBasePreferenceFragment implements
         String settingsKey = null;
         int dialogTitle = 0;
 	    if (preference == mGestureDoubleTap) {
+            int resId = getResources().getIdentifier("config_supportDoubleTapWake", "bool", "android");
+            boolean dt2wSupported = resId != 0 && getResources().getBoolean(resId);
+            if (dt2wSupported) {
+                boolean systemDt2wEnabled = Settings.Secure.getInt(getContext().getContentResolver(),
+                        Settings.Secure.DOUBLE_TAP_TO_WAKE, 1) == 1;
+                if (!systemDt2wEnabled) {
+                    new AlertDialog.Builder(getContext())
+                            .setTitle(R.string.gesture_double_tap_title)
+                            .setMessage("Tap to wake is currently disabled in System Settings. Enable it now to use double tap gestures?")
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Settings.Secure.putInt(getContext().getContentResolver(), Settings.Secure.DOUBLE_TAP_TO_WAKE, 1);
+                                    showDialogInner(DLG_SHOW_ACTION_DIALOG, PREF_GESTURE_DOUBLE_TAP, R.string.gesture_double_tap_title);
+                                }
+                            })
+                            .setNegativeButton(android.R.string.no, null)
+                            .show();
+                    return true;
+                }
+            }
             settingsKey = PREF_GESTURE_DOUBLE_TAP;
             dialogTitle = R.string.gesture_double_tap_title;
         } else if (preference == mGestureW) {
@@ -279,16 +317,17 @@ public class ScreenOffGesture extends SettingsBasePreferenceFragment implements
         if (!mCheckPreferences) {
             return false;
         }
-        if (preference == mEnableDt2w) {
-            mScreenOffGestureSharedPreferences.edit()
-                    .putBoolean(PREF_DT2W_ENABLE, (Boolean) newValue).commit();
-            KernelControl.enableDt2w((Boolean) newValue);
-            return true;
-        }
+
         if (preference == mEnableGestures) {
             mScreenOffGestureSharedPreferences.edit()
                     .putBoolean(PREF_GESTURE_ENABLE, (Boolean) newValue).commit();
             KernelControl.enableGestures((Boolean) newValue);
+            return true;
+        } else if (preference == mEnableDt2w) {
+            boolean value = (Boolean) newValue;
+            Utils.putIntSystem(getContext(), getActivity().getContentResolver(),
+                    PREF_DT2W_ENABLE, value ? 1 : 0);
+            KernelControl.enableDt2w(value);
             return true;
         }
         final String key = preference.getKey();
@@ -305,8 +344,7 @@ public class ScreenOffGesture extends SettingsBasePreferenceFragment implements
     private void resetToDefault() {
         SharedPreferences.Editor editor = mScreenOffGestureSharedPreferences.edit();
 
-        mScreenOffGestureSharedPreferences.edit()
-                .putBoolean(PREF_DT2W_ENABLE, true).commit();
+
         mScreenOffGestureSharedPreferences.edit()
                 .putBoolean(PREF_GESTURE_ENABLE, false).commit();
 
@@ -338,7 +376,7 @@ public class ScreenOffGesture extends SettingsBasePreferenceFragment implements
                 ActionConstants.ACTION_MEDIA_NEXT).commit();
         mHapticFeedback.setChecked(true);
         editor.commit();
-        KernelControl.enableDt2w(true);
+
         KernelControl.enableGestures(true);
         reloadSettings();
     }

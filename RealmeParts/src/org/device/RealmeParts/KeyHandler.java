@@ -149,7 +149,12 @@ public class KeyHandler implements DeviceKeyHandler {
                 action = getGestureSharedPreferences()
                         .getString(ScreenOffGesture.PREF_GESTURE_DOUBLE_TAP,
                         ActionConstants.ACTION_WAKE_DEVICE);
-                        doHapticFeedback();
+                boolean enableGestures = Utils.getFileValueAsBoolean("/proc/touchpanel/gesture_enable", false);
+                if (enableGestures) {
+                    doHapticFeedback();
+                } else {
+                    action = ActionConstants.ACTION_WAKE_DEVICE;
+                }
                 break;
 
             case GESTURE_W_SCANCODE:
@@ -241,7 +246,8 @@ public class KeyHandler implements DeviceKeyHandler {
         if (mVibrator == null) {
             return;
         }
-        boolean enabled = getGestureSharedPreferences().getInt(Utils.TOUCHSCREEN_GESTURE_HAPTIC_FEEDBACK, 1) != 0;
+        boolean enabled = Settings.System.getInt(mContext.getContentResolver(),
+                Utils.TOUCHSCREEN_GESTURE_HAPTIC_FEEDBACK, 1) != 0;
         if (enabled) {
             mVibrator.vibrate(50);
         }

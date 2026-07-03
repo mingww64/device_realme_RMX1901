@@ -1254,4 +1254,7 @@
     <!-- PowerOffAlarmService -->
     <bool name="config_powerOffAlarmEnabled">true</bool>
 
+    <!-- Use hardware proximity sensor for pocket mode since tp_proximity relies on screen -->
+    <string name="config_pocketJudgeVendorProximitySensorName">qti.sensor.proximity_fake</string>
+
 </resources>
