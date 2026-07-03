@@ -148,9 +148,9 @@ public class ScreenOffGesture extends SettingsBasePreferenceFragment implements
         boolean dt2wSupported = resId != 0 && getResources().getBoolean(resId);
         
         if (dt2wSupported) {
-            PreferenceCategory dt2wCategory = (PreferenceCategory) prefs.findPreference("dt2w");
-            if (dt2wCategory != null && mEnableDt2w != null) {
-                dt2wCategory.removePreference(mEnableDt2w);
+            PreferenceCategory gesturesCategory = (PreferenceCategory) prefs.findPreference("gestures");
+            if (gesturesCategory != null && mEnableDt2w != null) {
+                gesturesCategory.removePreference(mEnableDt2w);
             }
         } else {
             mEnableDt2w.setChecked(Utils.getIntSystem(getContext(), getActivity().

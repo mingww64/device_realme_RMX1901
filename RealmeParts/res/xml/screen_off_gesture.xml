@@ -36,6 +36,18 @@
                 android:persistent="false"
                 android:summary="@string/enable_gestures_summary" />
 
+            <SwitchPreferenceCompat
+                android:key="enable_dt2w"
+                android:title="@string/enable_dt2w_title"
+                android:persistent="false"
+                android:summary="@string/enable_dt2w_summary" />
+
+            <Preference
+                android:key="gesture_double_tap"
+                android:title="@string/gesture_double_tap_title"
+                android:persistent="false"
+                android:dependency="enable_dt2w" />
+
             <Preference
                 android:key="gesture_w"
                 android:title="@string/gesture_w_title"
@@ -107,23 +119,6 @@
                 android:title="@string/gesture_swipe_right_title"
                 android:persistent="false"
                 android:dependency="enable_gestures" />
-        </PreferenceCategory>
-
-        <PreferenceCategory
-            android:key="dt2w"
-            android:title="@string/dt2w_title" >
-
-            <SwitchPreferenceCompat
-                android:key="enable_dt2w"
-                android:title="@string/enable_dt2w_title"
-                android:persistent="false"
-                android:summary="@string/enable_dt2w_summary" />
-
-            <Preference
-                android:key="gesture_double_tap"
-                android:title="@string/gesture_double_tap_title"
-                android:persistent="false"
-                android:dependency="enable_dt2w" />
         </PreferenceCategory>
 
 </PreferenceScreen>
