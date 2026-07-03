@@ -80,8 +80,8 @@
 
         <Preference
             android:key="udfps_calibrate_bleed"
-            android:title="Calibrate Screen Bleed"
-            android:summary="Automatically determine Max Screen Bleed Lux in a dark room">
+            android:title="@string/udfps_calibrate_bleed_title"
+            android:summary="@string/udfps_calibrate_bleed_summary">
             <intent android:targetPackage="org.device.RealmeParts"
                     android:targetClass="org.device.RealmeParts.UdfpsCalibrationActivity" />
         </Preference>

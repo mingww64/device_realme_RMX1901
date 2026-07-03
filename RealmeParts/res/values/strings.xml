@@ -183,7 +183,9 @@
     <string name="vibration_strength_call_title">Call vibration</string>
 
     <!-- UDFPS Auto-brightness Fix -->
-    <string name="udfps_light_sensor_fix_title">UDFPS Auto-Brightness Fix</string>
-    <string name="udfps_light_sensor_fix_summary">Prevents screen brightness bleed from increasing auto-brightness in dark environments.</string>
+    <string name="udfps_light_sensor_fix_title">UDFPS Light Sensor Fix</string>
+    <string name="udfps_light_sensor_fix_summary">Filters out the display\'s own light bleeding into the under-display ambient light sensor to prevent blinding auto-brightness spikes in dark environments.</string>
+    <string name="udfps_calibrate_bleed_title">Screen Bleed Calibration</string>
+    <string name="udfps_calibrate_bleed_summary">Measures the display light bleed characteristics. You must run this in a completely dark room for accurate filtering.</string>
 
 </resources>
