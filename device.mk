@@ -122,12 +122,12 @@ PRODUCT_PACKAGES += \
 # Display
 PRODUCT_PACKAGES += \
     android.hardware.graphics.composer@2.3-service \
-    android.hardware.graphics.mapper@2.0-impl-qti-display \
-    gralloc.sdm710 \
+    android.hardware.graphics.mapper@4.0-impl-qti-display \
+    gralloc.qcom \
     hwcomposer.qcom \
     libvulkan \
     vendor.qti.hardware.memtrack-service \
-    vendor.qti.hardware.display.allocator@1.0-service
+    vendor.qti.hardware.display.allocator-service
 
 PRODUCT_SYSTEM_SERVER_COMPILER_FILTER := speed-profile
 PRODUCT_ALWAYS_PREOPT_EXTRACTED_APK := true
