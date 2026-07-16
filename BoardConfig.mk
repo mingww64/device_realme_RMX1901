@@ -42,7 +42,7 @@ TARGET_KERNEL_CONFIG := sdm670-perf_defconfig
 TARGET_KERNEL_CLANG_VERSION := proton
 TARGET_KERNEL_CLANG_PATH := $(shell pwd)/prebuilts/clang/host/linux-x86/clang-proton
 TARGET_KERNEL_LLVM_BINUTILS := true
-TARGET_KERNEL_ADDITIONAL_FLAGS += LLVM=1 LLVM_IAS=1 HOSTCFLAGS="-fuse-ld=lld -Wno-unused-command-line-argument -D__isoc23_strtoul=strtoul" HOSTCC=$(shell pwd)/prebuilts/clang/host/linux-x86/clang-r584948/bin/clang HOSTCXX=$(shell pwd)/prebuilts/clang/host/linux-x86/clang-r584948/bin/clang++
+TARGET_KERNEL_ADDITIONAL_FLAGS += LLVM=1 LLVM_IAS=1 HOSTCFLAGS="-fuse-ld=lld -Wno-unused-command-line-argument -D__isoc23_strtoul=strtoul -Wl,--defsym,__isoc23_strtoul=strtoul" HOSTCC=$(shell pwd)/prebuilts/clang/host/linux-x86/clang-r584948/bin/clang HOSTCXX=$(shell pwd)/prebuilts/clang/host/linux-x86/clang-r584948/bin/clang++
 
 # Pass virtual framebuffer to recovery cmdline without affecting OS
 BOARD_RECOVERY_MKBOOTIMG_ARGS += --cmdline "$(BOARD_KERNEL_CMDLINE) video=vfb:640x400,bpp=32,memsize=3072000 printk.devkmsg=on"
