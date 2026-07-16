@@ -183,9 +183,9 @@ PRODUCT_BOARD_PLATFORM := sdm845
 PRODUCT_USES_QCOM_HARDWARE := true
 
 # HALS
-SRC_AUDIO_HAL_DIR := hardware/qcom-caf/sdm845/audio
-SRC_DISPLAY_HAL_DIR := hardware/qcom-caf/sdm845/display
-SRC_MEDIA_HAL_DIR := hardware/qcom-caf/sdm845/media
+SRC_AUDIO_HAL_DIR := hardware/qcom-caf/sm8150/audio
+SRC_DISPLAY_HAL_DIR := hardware/qcom-caf/sm8150/display
+SRC_MEDIA_HAL_DIR := hardware/qcom-caf/sm8150/media
 
 # Input
 PRODUCT_COPY_FILES += \
@@ -378,7 +378,7 @@ PRODUCT_SOONG_NAMESPACES += \
     $(LOCAL_PATH) \
     bootable/deprecated-ota \
     vendor/qcom/opensource/usb/etc \
-    hardware/qcom-caf/sdm845 \
+    hardware/qcom-caf/sm8150 \
     hardware/google/interfaces \
     hardware/google/pixel/pixelstats \
     hardware/google/pixel/power-libperfmgr \
