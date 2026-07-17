@@ -18,6 +18,9 @@ $(call inherit-product, vendor/realme/RMX1901/RMX1901-vendor.mk)
 # Add common definitions for Qualcomm
 $(call inherit-product, hardware/qcom-caf/common/common.mk)
 
+# Disable VINTF kernel requirements for legacy 4.9 device
+PRODUCT_OTA_ENFORCE_VINTF_KERNEL_REQUIREMENTS := false
+
 # Dolby
 TARGET_INCLUDES_DolbyVision := true
 $(call inherit-product, hardware/dolby/dolby.mk)
@@ -27,7 +30,6 @@ PRODUCT_PACKAGES += \
 
 
 OVERRIDE_PRODUCT_COMPRESSED_APEX := false
-PRODUCT_OTA_ENFORCE_VINTF_KERNEL_REQUIREMENTS := true
 
 # Bluetooth
 PRODUCT_PACKAGES += \
@@ -122,12 +124,12 @@ PRODUCT_PACKAGES += \
 # Display
 PRODUCT_PACKAGES += \
     android.hardware.graphics.composer@2.3-service \
-    android.hardware.graphics.mapper@4.0-impl-qti-display \
-    gralloc.qcom \
+    android.hardware.graphics.mapper@2.0-impl-qti-display \
+    gralloc.sdm710 \
     hwcomposer.qcom \
     libvulkan \
     vendor.qti.hardware.memtrack-service \
-    vendor.qti.hardware.display.allocator-service
+    vendor.qti.hardware.display.allocator@1.0-service
 
 PRODUCT_SYSTEM_SERVER_COMPILER_FILTER := speed-profile
 PRODUCT_ALWAYS_PREOPT_EXTRACTED_APK := true
@@ -183,9 +185,9 @@ PRODUCT_BOARD_PLATFORM := sdm845
 PRODUCT_USES_QCOM_HARDWARE := true
 
 # HALS
-SRC_AUDIO_HAL_DIR := hardware/qcom-caf/sm8150/audio
-SRC_DISPLAY_HAL_DIR := hardware/qcom-caf/sm8150/display
-SRC_MEDIA_HAL_DIR := hardware/qcom-caf/sm8150/media
+SRC_AUDIO_HAL_DIR := hardware/qcom-caf/sdm845/audio
+SRC_DISPLAY_HAL_DIR := hardware/qcom-caf/sdm845/display
+SRC_MEDIA_HAL_DIR := hardware/qcom-caf/sdm845/media
 
 # Input
 PRODUCT_COPY_FILES += \
@@ -378,7 +380,7 @@ PRODUCT_SOONG_NAMESPACES += \
     $(LOCAL_PATH) \
     bootable/deprecated-ota \
     vendor/qcom/opensource/usb/etc \
-    hardware/qcom-caf/sm8150 \
+    hardware/qcom-caf/sdm845 \
     hardware/google/interfaces \
     hardware/google/pixel/pixelstats \
     hardware/google/pixel/power-libperfmgr \

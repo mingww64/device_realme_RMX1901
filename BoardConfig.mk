@@ -31,7 +31,7 @@ TARGET_NO_BOOTLOADER := true
 BOARD_BOOT_HEADER_VERSION := 1
 BOARD_KERNEL_BASE := 0x00000000
 BOARD_KERNEL_CMDLINE := console=ttyMSM0,115200n8 earlycon=msm_geni_serial,0xA90000 androidboot.hardware=qcom androidboot.console=ttyMSM0 msm_rtb.filter=0x237 ehci-hcd.park=3 lpm_levels.sleep_disabled=1 service_locator.enable=1 androidboot.configfs=true androidboot.usbcontroller=a600000.dwc3 swiotlb=1 loop.max_part=7 kpti=off
-BOARD_KERNEL_CMDLINE += printk.devkmsg=on androidboot.init_fatal_reboot_target=recovery
+BOARD_KERNEL_CMDLINE += printk.devkmsg=on androidboot.init_fatal_reboot_target=recovery androidboot.selinux=permissive
 
 BOARD_KERNEL_IMAGE_NAME := Image.gz-dtb
 BOARD_KERNEL_SEPARATED_DTBO := true
@@ -42,7 +42,6 @@ TARGET_KERNEL_CONFIG := sdm670-perf_defconfig
 TARGET_KERNEL_CLANG_VERSION := proton
 TARGET_KERNEL_CLANG_PATH := $(shell pwd)/prebuilts/clang/host/linux-x86/clang-proton
 TARGET_KERNEL_LLVM_BINUTILS := true
-TARGET_KERNEL_ADDITIONAL_FLAGS += LLVM=1 LLVM_IAS=1 HOSTCFLAGS="-fuse-ld=lld -Wno-unused-command-line-argument -D__isoc23_strtoul=strtoul" HOSTCC=$(shell pwd)/prebuilts/clang/host/linux-x86/clang-r584948/bin/clang HOSTCXX=$(shell pwd)/prebuilts/clang/host/linux-x86/clang-r584948/bin/clang++
 
 # Pass virtual framebuffer to recovery cmdline without affecting OS
 BOARD_RECOVERY_MKBOOTIMG_ARGS += --cmdline "$(BOARD_KERNEL_CMDLINE) video=vfb:640x400,bpp=32,memsize=3072000 printk.devkmsg=on"
@@ -103,6 +102,7 @@ BOARD_CACHEIMAGE_PARTITION_SIZE := 268435456
 
 BOARD_VENDORIMAGE_PARTITION_SIZE := 1610612736
 BOARD_VENDORIMAGE_FILE_SYSTEM_TYPE := ext4
+BOARD_USES_METADATA_PARTITION := true
 
 BOARD_ODMIMAGE_PARTITION_SIZE := 268435456
 BOARD_ODMIMAGE_FILE_SYSTEM_TYPE := ext4
@@ -183,3 +183,4 @@ WIFI_HIDL_FEATURE_DUAL_INTERFACE := true
 WIFI_HIDL_UNIFIED_SUPPLICANT_SERVICE_RC_ENTRY := true
 QC_WIFI_HIDL_FEATURE_DUAL_AP := true
 WPA_SUPPLICANT_VERSION := VER_0_8_X
+TARGET_KERNEL_ADDITIONAL_FLAGS := CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi-  HOSTCC=$(shell pwd)/prebuilts/clang/host/linux-x86/clang-r584948/bin/clang HOSTCXX=$(shell pwd)/prebuilts/clang/host/linux-x86/clang-r584948/bin/clang++
