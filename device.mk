@@ -26,7 +26,8 @@ TARGET_INCLUDES_DolbyVision := true
 $(call inherit-product, hardware/dolby/dolby.mk)
 
 PRODUCT_PACKAGES += \
-    LunarisDolby
+    LunarisDolby \
+    libc_mutexdestroy_shim
 
 
 OVERRIDE_PRODUCT_COMPRESSED_APEX := false
@@ -337,7 +338,7 @@ PRODUCT_PACKAGES += \
 
 # Ramdisk
 PRODUCT_PACKAGES += \
-    fstab.qcom \
+    fstab.default \
     init.RealmeParts.rc \
     init.oppo.rc \
     init.oppo.display.rc \
@@ -356,7 +357,7 @@ PRODUCT_PACKAGES += \
     usb_compositions.conf
 
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/rootdir/etc/fstab.qcom:$(TARGET_COPY_OUT_RAMDISK)/fstab.qcom
+    $(LOCAL_PATH)/rootdir/etc/fstab.default:$(TARGET_COPY_OUT_RAMDISK)/fstab.default
 
 # Realme specific packages
 PRODUCT_PACKAGES += \
