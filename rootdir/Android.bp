@@ -62,8 +62,8 @@ prebuilt_etc {
 }
 
 prebuilt_etc {
-    name: "fstab.qcom",
-    src: "etc/fstab.qcom",
+    name: "fstab.default",
+    src: "etc/fstab.default",
     soc_specific: true,
 }
 

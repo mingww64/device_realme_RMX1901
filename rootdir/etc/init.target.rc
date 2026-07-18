@@ -30,7 +30,7 @@
 on fs
     wait /dev/block/platform/soc/${ro.boot.bootdevice}
     symlink /dev/block/platform/soc/${ro.boot.bootdevice} /dev/block/bootdevice
-    mount_all /vendor/etc/fstab.qcom --early
+    mount_all /vendor/etc/fstab.default --early
     chown root system /mnt/vendor/persist
     chmod 0771 /mnt/vendor/persist
     restorecon_recursive /mnt/vendor/persist
@@ -47,7 +47,7 @@ on post-fs
     rm /data/system/package_cache
 
 on late-fs
-    mount_all /vendor/etc/fstab.qcom --late
+    mount_all /vendor/etc/fstab.default --late
 
 on post-fs-data
     mkdir /data/vendor/nnhal 0700 system system
@@ -156,3 +156,14 @@ on property:init.svc.zygote=restarting
     stop ppd
 #endif/*VENDOR_EDIT*/
 
+
+# Override hwcomposer to inject shim for legacy bionic
+service vendor.hwcomposer-2-3 /vendor/bin/hw/android.hardware.graphics.composer@2.3-service
+    override
+    class hal animation
+    user system
+    group graphics drmrpc
+    capabilities SYS_NICE
+    onrestart restart surfaceflinger
+    task_profiles ServiceCapacityLow
+    setenv LD_PRELOAD libc_mutexdestroy_shim.so
