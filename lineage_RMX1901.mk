@@ -6,12 +6,12 @@
 
 # Inherit some common Evolution stuff
 TARGET_BOOT_ANIMATION_RES := 1080
+# WITH_GMS := false
 TARGET_USES_MINI_GAPPS := true
 TARGET_HAS_UDFPS := true
 
 BYPASS_CHARGE_SUPPORTED := true
-TARGET_INCLUDE_VIPERFX := true
-$(call inherit-product, packages/apps/ViPER4AndroidFX/config.mk)
+# TARGET_INCLUDE_VIPERFX := true
 
 $(call inherit-product, vendor/lineage/config/common_full_phone.mk)
 
@@ -33,6 +33,3 @@ PRODUCT_BUILD_PROP_OVERRIDES += \
     DeviceProduct=RMX1901 \
     SystemDevice=RMX1901 \
     SystemName=RMX1901
-
-PRODUCT_PROPERTY_OVERRIDES += \
-    ro.boot.vendor.overlay.theme=com.android.internal.systemui.navbar.gestural;com.google.android.systemui.gxoverlay_gms
