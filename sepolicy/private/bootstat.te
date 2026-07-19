@@ -1,0 +1,2 @@
+# bootstat queries the Health HAL to record the boot reason.
+hal_client_domain(bootstat, hal_health)
