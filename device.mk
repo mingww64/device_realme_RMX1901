@@ -32,6 +32,13 @@ PRODUCT_PACKAGES += \
 
 OVERRIDE_PRODUCT_COMPRESSED_APEX := false
 
+# This legacy 4.9 kernel does not support vold filesystem checkpoints.  Prevent
+# Android 17's mount-before-data/pinned-APEX path from being selected: that path
+# cannot activate a staged APEX without a checkpoint.  Staged APEXes use the
+# conventional /data activation path instead.
+PRODUCT_SYSTEM_PROPERTIES += \
+    apexd.config.use_fiemap=false
+
 # Bluetooth
 PRODUCT_PACKAGES += \
     android.hardware.bluetooth.audio-impl \
