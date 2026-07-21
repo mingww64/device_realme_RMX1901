@@ -1,0 +1,4 @@
+[submodule "external/LunarisDolby"]
+	path = external/LunarisDolby
+	url = https://github.com/mingww64/packages_apps_LunarisDolby.git
+	branch = 16
