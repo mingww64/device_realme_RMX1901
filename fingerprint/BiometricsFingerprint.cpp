@@ -208,6 +208,11 @@ Return<void> BiometricsFingerprint::onFingerDown(uint32_t, uint32_t, float, floa
         mTouchId++;
     }
     set(DIMLAYER_PATH, 1);
+    // ScreenStateService can disable the touch controller while the panel is
+    // off.  The framework keeps the authentication operation alive across
+    // that transition, so re-enable it before notifying the display that a
+    // finger is down.
+    set(FP_ENABLE_PATH, 1);
     set(FP_PRESS_PATH, 1);
     return Void();
 }
@@ -237,7 +242,8 @@ Return<uint64_t> BiometricsFingerprint::setNotify(
         const sp<IBiometricsFingerprintClientCallback>& clientCallback) {
     ALOGE("setNotify");
     mOppoClientCallback = new OppoClientCallback(clientCallback);
-    return mOppoBiometricsFingerprint->setNotify(mOppoClientCallback);
+    mDeviceId = mOppoBiometricsFingerprint->setNotify(mOppoClientCallback);
+    return mDeviceId;
 }
 
 Return<RequestStatus> BiometricsFingerprint::OppoToAOSPRequestStatus(vendor::oppo::hardware::biometrics::fingerprint::V2_1::RequestStatus req) {
@@ -312,10 +318,14 @@ Return<RequestStatus> BiometricsFingerprint::cancel()  {
     set(FP_ENABLE_PATH, 0);
     mFodCircleVisible = false;
 
-    if (mOppoBiometricsFingerprint->cancel() == vendor::oppo::hardware::biometrics::fingerprint::V2_1::RequestStatus::SYS_OK) {
-        mOppoClientCallback->onError(mOppoBiometricsFingerprint->setNotify(mOppoClientCallback), vendor::oppo::hardware::biometrics::fingerprint::V2_1::FingerprintError::ERROR_CANCELED, 0);
+    const auto status = mOppoBiometricsFingerprint->cancel();
+    if (status == vendor::oppo::hardware::biometrics::fingerprint::V2_1::RequestStatus::SYS_OK &&
+            mOppoClientCallback != nullptr) {
+        mOppoClientCallback->onError(mDeviceId,
+                vendor::oppo::hardware::biometrics::fingerprint::V2_1::FingerprintError::ERROR_CANCELED,
+                0);
     }
-    return OppoToAOSPRequestStatus(mOppoBiometricsFingerprint->cancel());
+    return OppoToAOSPRequestStatus(status);
 }
 
 Return<RequestStatus> BiometricsFingerprint::enumerate()  {
