@@ -11,7 +11,7 @@ TARGET_USES_MINI_GAPPS := true
 TARGET_HAS_UDFPS := true
 
 BYPASS_CHARGE_SUPPORTED := true
-# TARGET_INCLUDE_VIPERFX := true
+TARGET_INCLUDE_VIPERFX := true
 
 $(call inherit-product, vendor/lineage/config/common_full_phone.mk)
 
